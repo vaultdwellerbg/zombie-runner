@@ -15,8 +15,8 @@ public class ClearAreaDetector : MonoBehaviour {
 	void Update () {
 		if (!clearZoneFound && Time.timeSinceLevelLoad - timeOfLastTrigger > 1f)
 		{
-			Debug.Log("Ready");
 			clearZoneFound = true;
+			SendMessageUpwards("OnFindClearArea");
 			audioSource.Play();
 		}
 	}

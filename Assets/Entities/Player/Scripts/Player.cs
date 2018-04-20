@@ -5,8 +5,9 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
 	public Transform playerSpawnPoints;
-	public bool respawn = false;
+	public Helicopter helicopter;
 
+	private bool respawn = false;
 	private Vector3[] spawnPoints;
 
 	void Start () {
@@ -35,5 +36,13 @@ public class Player : MonoBehaviour {
 	private void Respawn() {
 		Vector3 randomSpawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
 		transform.position = randomSpawnPoint;
+	}
+
+	void OnFindClearArea()
+	{
+		Debug.Log("Clear area found");
+		helicopter.Call();
+		// Deploy flare
+		// Start Spawning zombies
 	}
 }
