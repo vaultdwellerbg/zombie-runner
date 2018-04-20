@@ -6,12 +6,14 @@ public class Player : MonoBehaviour {
 
 	public Transform playerSpawnPoints;
 	public Helicopter helicopter;
+	public Speaker speaker;
 
 	private bool respawn = false;
 	private Vector3[] spawnPoints;
 
 	void Start () {
 		FindSpawnPoints();
+		Invoke("SpeakWhatHappened", 1);
 	}
 
 	private void FindSpawnPoints()
@@ -22,6 +24,11 @@ public class Player : MonoBehaviour {
 		{
 			spawnPoints[i] = playerSpawnPoints.GetChild(i).position;
 		}
+	}
+
+	private void SpeakWhatHappened()
+	{
+		speaker.WhatHappened();
 	}
 
 	private void Update()
