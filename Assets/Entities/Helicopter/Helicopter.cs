@@ -6,10 +6,12 @@ public class Helicopter : MonoBehaviour {
 
 	private bool called = false;
 	private Rigidbody rigidbody;
+	private AudioSource audioSource;
 
 	private void Start()
 	{
 		rigidbody = GetComponent<Rigidbody>();
+		audioSource = GetComponent<AudioSource>();
 	}
 
 	public void Call()
@@ -17,7 +19,7 @@ public class Helicopter : MonoBehaviour {
 		if (!called)
 		{
 			called = true;
-			print("Helicopter called");
+			audioSource.Play();
 			rigidbody.velocity = new Vector3(0, 0, 50f);
 		}
 	}

@@ -41,8 +41,13 @@ public class Player : MonoBehaviour {
 	void OnFindClearArea()
 	{
 		Debug.Log("Clear area found");
-		helicopter.Call();
+		Invoke("CallHeli", 2);
 		// Deploy flare
 		// Start Spawning zombies
+	}
+
+	void CallHeli()
+	{
+		helicopter.Call();
 	}
 }

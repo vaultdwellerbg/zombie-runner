@@ -13,12 +13,19 @@ public class ClearAreaDetector : MonoBehaviour {
 	}
 	
 	void Update () {
-		if (!clearZoneFound && Time.timeSinceLevelLoad - timeOfLastTrigger > 1f)
+		if (IsClearZoneFound())
 		{
 			clearZoneFound = true;
 			SendMessageUpwards("OnFindClearArea");
 			audioSource.Play();
 		}
+	}
+
+	private bool IsClearZoneFound()
+	{
+		return !clearZoneFound
+			&& Time.timeSinceLevelLoad - timeOfLastTrigger > 1f
+			&& Time.timeSinceLevelLoad > 10f;
 	}
 
 	private void OnTriggerStay(Collider other)
