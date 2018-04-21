@@ -6,18 +6,12 @@ public class ClearAreaDetector : MonoBehaviour {
 
 	private float timeOfLastTrigger;
 	private bool clearZoneFound = false;
-	private AudioSource audioSource;
-
-	void Start () {
-		audioSource = GetComponent<AudioSource>();
-	}
 	
 	void Update () {
 		if (IsClearZoneFound())
 		{
 			clearZoneFound = true;
 			SendMessageUpwards("OnFindClearArea");
-			audioSource.Play();
 		}
 	}
 
@@ -28,8 +22,11 @@ public class ClearAreaDetector : MonoBehaviour {
 			&& Time.timeSinceLevelLoad > 10f;
 	}
 
-	private void OnTriggerStay(Collider other)
+	private void OnTriggerStay(Collider collider)
 	{
-		timeOfLastTrigger = Time.timeSinceLevelLoad;
+		if (collider.tag != "Player")
+		{
+			timeOfLastTrigger = Time.timeSinceLevelLoad;
+		}
 	}
 }

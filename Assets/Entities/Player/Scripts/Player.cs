@@ -5,15 +5,12 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
 	public Transform playerSpawnPoints;
-	public Helicopter helicopter;
-	public InnerVoice innerVoice;
 
 	private bool respawn = false;
 	private Vector3[] spawnPoints;
 
 	void Start () {
 		FindSpawnPoints();
-		Invoke("SpeakWhatHappened", 1);
 	}
 
 	private void FindSpawnPoints()
@@ -24,11 +21,6 @@ public class Player : MonoBehaviour {
 		{
 			spawnPoints[i] = playerSpawnPoints.GetChild(i).position;
 		}
-	}
-
-	private void SpeakWhatHappened()
-	{
-		innerVoice.WhatHappened();
 	}
 
 	private void Update()
@@ -47,14 +39,12 @@ public class Player : MonoBehaviour {
 
 	void OnFindClearArea()
 	{
-		Debug.Log("Clear area found");
-		Invoke("CallHeli", 2);
-		// Deploy flare
-		// Start Spawning zombies
+		BroadcastMessage("OnClearAreaFound");
+		Invoke("DropFlare", 3f);
 	}
 
-	void CallHeli()
+	void DropFlare()
 	{
-		helicopter.Call();
+		Debug.Log("Flare dropped");
 	}
 }
