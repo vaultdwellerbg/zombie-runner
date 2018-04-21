@@ -6,7 +6,7 @@ public class Player : MonoBehaviour {
 
 	public Transform playerSpawnPoints;
 	public Helicopter helicopter;
-	public Speaker speaker;
+	public InnerVoice innerVoice;
 
 	private bool respawn = false;
 	private Vector3[] spawnPoints;
@@ -28,7 +28,7 @@ public class Player : MonoBehaviour {
 
 	private void SpeakWhatHappened()
 	{
-		speaker.WhatHappened();
+		innerVoice.WhatHappened();
 	}
 
 	private void Update()

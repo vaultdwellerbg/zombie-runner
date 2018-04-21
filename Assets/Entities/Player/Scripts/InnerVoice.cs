@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Speaker : MonoBehaviour {
+public class InnerVoice : MonoBehaviour {
 
 	public AudioClip whatHappened;
 

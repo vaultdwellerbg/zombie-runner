@@ -19,7 +19,7 @@ public class Helicopter : MonoBehaviour {
 		if (!called)
 		{
 			called = true;
-			audioSource.Play();
+			//audioSource.Play();
 			rigidbody.velocity = new Vector3(0, 0, 50f);
 		}
 	}
