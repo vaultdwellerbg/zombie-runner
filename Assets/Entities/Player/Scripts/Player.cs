@@ -5,12 +5,17 @@ using UnityEngine;
 public class Player : MonoBehaviour {
 
 	public Transform playerSpawnPoints;
+	public GameObject landingAreaPrefab;
 
 	private bool respawn = false;
 	private Vector3[] spawnPoints;
+	private Vector3 flareLocation;
+	private Quaternion flareRotation;
+	private CharacterController characterController;
 
 	void Start () {
 		FindSpawnPoints();
+		characterController = GetComponent<CharacterController>();
 	}
 
 	private void FindSpawnPoints()
@@ -39,12 +44,26 @@ public class Player : MonoBehaviour {
 
 	void OnFindClearArea()
 	{
+		StoreFlarePositioningData();
 		BroadcastMessage("OnClearAreaFound");
 		Invoke("DropFlare", 3f);
 	}
 
+	private void StoreFlarePositioningData()
+	{
+		flareLocation = GetFlareLocation();
+		flareRotation = transform.rotation;
+	}
+
+	private Vector3 GetFlareLocation()
+	{
+		Vector3 playerPosition = transform.position;
+		float playerFeetY = playerPosition.y - characterController.height / 2;
+		return new Vector3(playerPosition.x, playerFeetY, playerPosition.z);
+	}
+
 	void DropFlare()
 	{
-		Debug.Log("Flare dropped");
+		GameObject.Instantiate(landingAreaPrefab, flareLocation, flareRotation);
 	}
 }
