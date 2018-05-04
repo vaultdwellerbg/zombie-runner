@@ -6,9 +6,16 @@ public class ClearAreaDetector : MonoBehaviour {
 
 	private float timeOfLastTrigger;
 	private bool clearZoneFound = false;
+	private int collidersInArea = 0;
 	
 	void Update () {
-		if (IsClearZoneFound())
+		if (clearZoneFound) return;
+
+		if (collidersInArea > 0)
+		{
+			timeOfLastTrigger = Time.timeSinceLevelLoad;
+		}
+		else if (IsClearZoneFound())
 		{
 			clearZoneFound = true;
 			SendMessageUpwards("OnFindClearArea");
@@ -17,16 +24,23 @@ public class ClearAreaDetector : MonoBehaviour {
 
 	private bool IsClearZoneFound()
 	{
-		return !clearZoneFound
-			&& Time.timeSinceLevelLoad - timeOfLastTrigger > 1f
+		return Time.timeSinceLevelLoad - timeOfLastTrigger > 3f
 			&& Time.timeSinceLevelLoad > 10f;
 	}
 
-	private void OnTriggerStay(Collider collider)
+	private void OnTriggerEnter(Collider collider)
 	{
-		if (collider.tag != "Player")
+		if (collider.name == "Terrain")
 		{
-			timeOfLastTrigger = Time.timeSinceLevelLoad;
+			collidersInArea++;
+		}
+	}
+
+	private void OnTriggerExit(Collider collider)
+	{
+		if (collider.name == "Terrain")
+		{
+			collidersInArea--;
 		}
 	}
 }
