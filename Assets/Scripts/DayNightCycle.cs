@@ -1,12 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DayNightCycle : MonoBehaviour {
 
 	public float gameMinutesPerSecond = 1;
+	public Material nightSkybox;
+	public Material daySkybox;
 
 	private float anglePerSecond;
+	private bool isNight = false;
 
 	private void Start()
 	{
@@ -14,8 +15,27 @@ public class DayNightCycle : MonoBehaviour {
 		anglePerSecond = anglePerGameMinute * gameMinutesPerSecond;
 	}
 
-	void Update () {
+	void Update ()
+	{
 		float angle = anglePerSecond * Time.deltaTime;
 		transform.RotateAround(transform.position, Vector3.forward, angle);
+
+		if (ShouldChangeSkybox())
+		{
+			isNight = !isNight;
+			ChangeSkybox();
+		}
+	}
+
+	private bool ShouldChangeSkybox()
+	{
+		bool isCurrenltyNight = transform.rotation.eulerAngles.x > 270 
+								&& transform.rotation.eulerAngles.x < 330;
+		return isNight != isCurrenltyNight;
+	}
+
+	void ChangeSkybox()
+	{
+		RenderSettings.skybox = isNight ? nightSkybox : daySkybox;
 	}
 }
