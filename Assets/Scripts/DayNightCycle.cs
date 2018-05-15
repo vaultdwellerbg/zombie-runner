@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Assets.Scripts;
 
 public class DayNightCycle : MonoBehaviour {
 
@@ -8,72 +9,68 @@ public class DayNightCycle : MonoBehaviour {
 
 	private float anglePerSecond;
 	private bool isNight = false;
-	private float startOfStarFadeIn;
-	private float startOfStarFadeOut;
 	private float totalAngle;
+	private SkyboxChanger skyboxChanger;
 
 	private void Start()
 	{
 		float anglePerGameMinute = 360f / (60f * 24f);
 		anglePerSecond = anglePerGameMinute * gameMinutesPerSecond;
 		nightSkybox.SetFloat("_Exposure", 0f);
+		skyboxChanger = new SkyboxChanger(daySkybox, nightSkybox);
 	}
 
 	void Update ()
 	{
-		// rotation
-		float angle = anglePerSecond * Time.deltaTime;
-		transform.RotateAround(transform.position, Vector3.forward, angle);
+		float anglePerFrame = anglePerSecond * Time.deltaTime;
+		transform.RotateAround(transform.position, Vector3.forward, anglePerFrame);
+		UpdateTotalAngle(anglePerFrame);
 
-		// total angle tracking
-		totalAngle += angle;
+		if (ShouldChangeDayPeriod())
+		{
+			ChangeDayPeriod();
+		}
+
+		if (!skyboxChanger.StarsFadeOutStarted() && DayPeriodIsNear())
+		{
+			skyboxChanger.StartStarsFadeOut();
+		}
+
+		skyboxChanger.Update();
+	}
+
+	private void UpdateTotalAngle(float value)
+	{
+		totalAngle += value;
 		if (totalAngle > 360f)
 		{
 			totalAngle -= 360f;
 		}
-
-		// skybox change
-		if (ShouldChangeSkybox())
-		{
-			isNight = !isNight;
-			ChangeSkybox();
-			if (isNight)
-			{
-				startOfStarFadeIn = Time.time;
-			}
-			else
-			{
-				startOfStarFadeIn = 0f;
-				startOfStarFadeOut = 0f;
-			}
-		}
-
-		if (nightSkybox.GetFloat("_Exposure") < 1 && startOfStarFadeIn > 0f)
-		{
-			nightSkybox.SetFloat("_Exposure", Mathf.Clamp(Time.time - startOfStarFadeIn, 0f, 1f));
-		}
-
-		if (startOfStarFadeOut == 0f && totalAngle > 140f)
-		{
-			startOfStarFadeOut = Time.time;
-		}
-
-		if (nightSkybox.GetFloat("_Exposure") > 0 && startOfStarFadeOut > 0f)
-		{
-			nightSkybox.SetFloat("_Exposure", 1f - Mathf.Clamp(Time.time - startOfStarFadeOut, 0f, 1f));
-		}
-
 	}
 
-	private bool ShouldChangeSkybox()
+	private bool ShouldChangeDayPeriod()
 	{
-		bool isCurrenltyNight = totalAngle > 30f 
+		bool isCurrenltyNight = totalAngle > 30f
 								&& totalAngle < 150f;
 		return isNight != isCurrenltyNight;
 	}
 
-	void ChangeSkybox()
+	private void ChangeDayPeriod()
 	{
-		RenderSettings.skybox = isNight ? nightSkybox : daySkybox;
+		isNight = !isNight;
+		skyboxChanger.ChangeSkybox(isNight);
+		if (isNight)
+		{
+			skyboxChanger.StartStarsFadeIn();
+		}
+		else
+		{
+			skyboxChanger.ResetFadeTimers();
+		}
+	}
+
+	private bool DayPeriodIsNear()
+	{
+		return totalAngle > 140f;
 	}
 }
