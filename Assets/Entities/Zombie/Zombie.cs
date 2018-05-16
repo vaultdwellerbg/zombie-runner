@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.Characters.ThirdPerson;
 
 public class Zombie : MonoBehaviour {
 
@@ -9,11 +10,14 @@ public class Zombie : MonoBehaviour {
 
 	private Animator animator;
 	private AudioSource audioSource;
+	private float originalAnimSpeed;
+	private ThirdPersonCharacter tps;
 
 	private void Start()
 	{
 		animator = GetComponent<Animator>();
 		audioSource = GetComponent<AudioSource>();
+		tps = GetComponent<ThirdPersonCharacter>();
 		InvokeRepeating("Grunt", 0f, 3f);
 	}
 
@@ -34,6 +38,8 @@ public class Zombie : MonoBehaviour {
 
 	private void Attack()
 	{
+		originalAnimSpeed = tps.m_AnimSpeedMultiplier;
+		tps.m_AnimSpeedMultiplier = 1f;
 		animator.SetBool("isAttacking", true);
 		CancelInvoke("Grunt");
 		PlayAttackingSound();
@@ -57,6 +63,7 @@ public class Zombie : MonoBehaviour {
 
 	private void Walk()
 	{
+		tps.m_AnimSpeedMultiplier = originalAnimSpeed;
 		animator.SetBool("isAttacking", false);
 		audioSource.loop = false;
 		InvokeRepeating("Grunt", 0f, 3f);
