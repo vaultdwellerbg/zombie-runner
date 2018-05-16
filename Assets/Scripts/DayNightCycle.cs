@@ -50,7 +50,7 @@ public class DayNightCycle : MonoBehaviour {
 
 	private bool ShouldChangeDayPeriod()
 	{
-		bool isCurrenltyNight = totalAngle > 30f
+		bool isCurrenltyNight = totalAngle > 20f
 								&& totalAngle < 150f;
 		return isNight != isCurrenltyNight;
 	}
